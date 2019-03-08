@@ -10,6 +10,8 @@
 
     <string name="location_request">The application is about to request access to your location.</string>
 
+    <string name="noAddress">No address</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

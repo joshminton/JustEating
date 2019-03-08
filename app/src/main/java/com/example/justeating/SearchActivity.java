@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toolbar;
@@ -45,6 +46,18 @@ public class SearchActivity extends AppCompatActivity {
         establishments = new ArrayList<>();
         establishmentsAdpt = new ArrayAdapter(this, android.R.layout.simple_selectable_list_item, establishments);
         ListView searchResultsList = findViewById(R.id.searchResultsList);
+
+        final AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Establishment clickedItem = (Establishment) establishmentsAdpt.getItem(position);
+                Intent intent = new Intent(SearchActivity.this, EstablishmentActivity.class);
+                intent.putExtra("establishment", clickedItem);
+                startActivity(intent);
+            }
+        };
+        searchResultsList.setOnItemClickListener(itemClickListener);
+
         searchResultsList.setAdapter(establishmentsAdpt);
         searchEstablishments();
     }
@@ -87,11 +100,29 @@ public class SearchActivity extends AppCompatActivity {
         try{
             for(int i = 0; i<items.length(); i++){
                 JSONObject jo = items.getJSONObject(i);
-                establishments.add(new Establishment(jo.getString("BusinessName")));
+                Establishment est = new Establishment(jo.getString("BusinessName"));
+                est.setAddr1(jo.getString("AddressLine1"));
+                est.setAddr2(jo.getString("AddressLine2"));
+                est.setAddr3(jo.getString("AddressLine3"));
+                est.setAddr4(jo.getString("AddressLine4"));
+                est.setPostcode(jo.getString("PostCode"));
+                est.setPhoneNo(jo.getString("Phone"));
+                est.setRating(jo.getString("RatingValue"));
+                est.setHygieneScore(jo.getJSONObject("scores").getString("Hygiene"));
+                est.setStructuralScore(jo.getJSONObject("scores").getString("Structural"));
+                est.setConfidenceScore(jo.getJSONObject("scores").getString("ConfidenceInManagement"));
+                est.setLongitude(jo.getJSONObject("geocode").getString("longitude"));
+                est.setLatitude(jo.getJSONObject("geocode").getString("latitude"));
+                est.setDateRated(jo.getString("RatingDate"));
+                establishments.add(est);
             }
         }
         catch(JSONException err){}
         establishmentsAdpt.notifyDataSetChanged();
+    }
+
+    public void onListItemPressed(View view){
+
     }
 
     @Override
