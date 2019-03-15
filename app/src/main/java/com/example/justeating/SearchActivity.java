@@ -63,7 +63,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void searchEstablishments(){
-        System.out.println("SEARCH");
         listed = true;
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         final String establishmentQuery = "http://api.ratings.food.gov.uk/establishments?name=" + query;

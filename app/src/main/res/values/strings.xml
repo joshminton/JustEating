@@ -5,8 +5,9 @@
     <string name="favourites_tab">Favourites</string>
 
     <string name="sort_text">Sort</string>
-    <string name="filter_text">Filter</string>
-
+    <string name="filter">Filter</string>
+    <string name="search">Search</string>
+    <string name="searchByLocation">Or search by current location</string>
 
     <string name="location_request">The application is about to request access to your location.</string>
 
@@ -14,5 +15,14 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="r0">0</string>
+    <string name="r1">1</string>
+    <string name="r2">2</string>
+    <string name="r3">3</string>
+    <string name="r4">4</string>
+    <string name="r5">5</string>
+
+
 
 </resources>
