@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     ArrayList<BusinessType> businessTypes = new ArrayList<>();
 
+    Integer estabFilter = -1, regionFilter = -1, authorityFilter = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +108,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         Intent searchIntent = new Intent(this, SearchActivity.class);
         searchIntent.putExtra(SearchActivity.EXTRA_QUERY, query);
+
+        searchIntent.putExtra(SearchActivity.EXTRA_TYPEFILTER, estabFilter);
+        searchIntent.putExtra(SearchActivity.EXTRA_REGIONFILTER, regionFilter);
+        searchIntent.putExtra(SearchActivity.EXTRA_AUTHORITYFILTER, authorityFilter);
+
         startActivity(searchIntent);
     }
 
@@ -116,10 +123,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void onFilterOKClick(FilterDialogFragment dialog){
-        String estabFilter = dialog.getSelectedEstab();
-        String regionFilter = dialog.getSelectedRegion();
-        String authorityFilter = dialog.getSelectedAuthority();
-        System.out.println(estabFilter);
+        System.out.println(dialog.getSelectedEstab());
+        estabFilter = dialog.getSelectedEstab();
+        regionFilter = dialog.getSelectedRegion();
+        authorityFilter = dialog.getSelectedAuthority();
     }
 
     public void importEstablishmentTypes(JSONArray establishmentTypes){

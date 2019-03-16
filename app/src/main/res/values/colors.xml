@@ -10,4 +10,11 @@
   <color name="secondaryTextColor">#000000</color>
   <color name="white">#FFFFFF</color>
   <color name="black">#000000</color>
+
+  <color name="rating0">#db4e32</color>
+  <color name="rating1">#db8932</color>
+  <color name="rating2">#dbad32</color>
+  <color name="rating3">#dbc732</color>
+  <color name="rating4">#97db32</color>
+  <color name="rating5">#32db40</color>
 </resources>

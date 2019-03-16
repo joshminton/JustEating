@@ -20,7 +20,8 @@ public class FilterDialogFragment extends DialogFragment {
     }
 
     FilterDialogListener listener;
-    Dialog dialog;
+    View dialogView;
+    Spinner businessTypeSpinner;
 
     private ArrayList<BusinessType> businessTypes;
     private ArrayAdapter<BusinessType> businessTypeAdpt;
@@ -49,7 +50,7 @@ public class FilterDialogFragment extends DialogFragment {
 
         View dialogView = requireActivity().getLayoutInflater().inflate(R.layout.dialog_filter, null);
 
-        Spinner businessTypeSpinner = dialogView.findViewById(R.id.businessTypeSpinner);
+        businessTypeSpinner = dialogView.findViewById(R.id.businessTypeSpinner);
         businessTypeAdpt = new ArrayAdapter(this.getActivity(), android.R.layout.simple_spinner_item, businessTypes);
         businessTypeAdpt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         businessTypeSpinner.setAdapter(businessTypeAdpt);
@@ -67,24 +68,28 @@ public class FilterDialogFragment extends DialogFragment {
                 });
         // Create the AlertDialog object and return it
 
-        this.dialog = builder.create();
-
-        return dialog;
+        return builder.create();
     }
 
     public void setFilterLists(ArrayList<BusinessType> businessTypes){
         this.businessTypes = businessTypes;
     }
 
-    public String getSelectedEstab(){
-        return "establishment";
+    public Integer getSelectedEstab(){
+        if(((BusinessType) businessTypeSpinner.getSelectedItem()) != null){
+            return ((BusinessType) businessTypeSpinner.getSelectedItem()).getId();
+        } else {
+            return -1;
+        }
+
+
     }
 
-    public String getSelectedRegion(){
-        return "establishment";
+    public Integer getSelectedRegion(){
+        return -1;
     }
 
-    public String getSelectedAuthority(){
-        return "establishment";
+    public Integer getSelectedAuthority(){
+        return -1;
     }
 }

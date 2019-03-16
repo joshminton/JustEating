@@ -21,6 +21,7 @@ public class Establishment implements Serializable {
     }
 
     private String name;
+    private String type;
     private String addr1;
     private String addr2;
     private String addr3;
@@ -157,5 +158,13 @@ public class Establishment implements Serializable {
         } catch (ParseException e) {
             System.out.println("Broken date parsing for " + name);
         }
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

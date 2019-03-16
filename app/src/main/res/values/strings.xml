@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">JustEating</string>
     <string name="explore_tab">Explore</string>
-    <string name="home_tab">Home</string>
+    <string name="home_tab">Search</string>
     <string name="favourites_tab">Favourites</string>
+
+    <string name="sample">sample</string>
 
     <string name="sort_text">Sort</string>
     <string name="filter">Filter</string>
@@ -16,6 +18,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+
+    <string name="businessTypeSelect">Business type&#8230;</string>
+    <string name="regionSelect">Region&#8230;</string>
+    <string name="authoritySelect">Authority&#8230;</string>
+    <string name="ratingSelect">Hygiene rating&#8230;</string>
+
     <string name="r0">0</string>
     <string name="r1">1</string>
     <string name="r2">2</string>
@@ -23,6 +31,13 @@
     <string name="r4">4</string>
     <string name="r5">5</string>
 
+    <string name="rate0Desc">URGENT IMPROVEMENT NECESSARY</string>
+    <string name="rate1Desc">MAJOR IMPROVEMENT NECESSARY</string>
+    <string name="rate2Desc">IMPROVEMENT NECESSARY</string>
+    <string name="rate3Desc">GENERALLY SATISFACTORY</string>
+    <string name="rate4Desc">GOOD</string>
+    <string name="rate5Desc">VERY GOOD</string>
 
+    <string name="noResults">No establishments found :(</string>
 
 </resources>

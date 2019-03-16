@@ -11,110 +11,140 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Spinner
-            android:id="@+id/businessTypeSpinner"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:spinnerMode="dropdown"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.47"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/filterTitle" />
-
-        <Spinner
-            android:id="@+id/spinner3"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:spinnerMode="dropdown"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.47"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/businessTypeSpinner" />
-
-        <Spinner
-            android:id="@+id/spinner4"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:spinnerMode="dropdown"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.47"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner3" />
-
-        <TextView
-            android:id="@+id/filterTitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="395dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Filters"
-            android:textAppearance="@android:style/TextAppearance.Material.Title"
-            android:textSize="30sp"
+            android:gravity="center_horizontal|top"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="244dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner4">
+            <TextView
+                android:id="@+id/filterTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Filters"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <CheckBox
-                android:id="@+id/checkBox10"
+            <TextView
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/r0" />
+                android:text="@string/businessTypeSelect"
+                tools:layout_editor_absoluteX="167dp"
+                tools:layout_editor_absoluteY="54dp" />
 
-            <CheckBox
-                android:id="@+id/checkBox11"
+            <Spinner
+                android:id="@+id/businessTypeSpinner"
+                android:layout_width="244dp"
+                android:layout_height="40dp"
+                android:spinnerMode="dropdown"
+                tools:layout_editor_absoluteX="159dp"
+                tools:layout_editor_absoluteY="81dp" />
+
+            <TextView
+                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/r1" />
+                android:text="@string/authoritySelect"
+                tools:layout_editor_absoluteX="167dp"
+                tools:layout_editor_absoluteY="126dp" />
 
-            <CheckBox
-                android:id="@+id/checkBox12"
+            <Spinner
+                android:id="@+id/spinner4"
+                android:layout_width="244dp"
+                android:layout_height="40dp"
+                android:spinnerMode="dropdown"
+                tools:layout_editor_absoluteX="80dp"
+                tools:layout_editor_absoluteY="421dp" />
+
+            <TextView
+                android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/r2" />
+                android:text="@string/regionSelect"
+                tools:layout_editor_absoluteX="88dp"
+                tools:layout_editor_absoluteY="394dp" />
 
-            <CheckBox
-                android:id="@+id/checkBox13"
+            <Spinner
+                android:id="@+id/spinner3"
+                android:layout_width="244dp"
+                android:layout_height="40dp"
+                android:spinnerMode="dropdown"
+                tools:layout_editor_absoluteX="159dp"
+                tools:layout_editor_absoluteY="153dp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/r3" />
+                android:text="@string/ratingSelect" />
 
-            <CheckBox
-                android:id="@+id/checkBox14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/r4" />
+            <LinearLayout
+                android:layout_width="244dp"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                tools:layout_editor_absoluteX="159dp"
+                tools:layout_editor_absoluteY="493dp">
 
-            <CheckBox
-                android:id="@+id/checkBox15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/r5" />
+                <CheckBox
+                    android:id="@+id/checkBox10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/r0" />
+
+                <CheckBox
+                    android:id="@+id/checkBox11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/r1" />
+
+                <CheckBox
+                    android:id="@+id/checkBox12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/r2" />
+
+                <CheckBox
+                    android:id="@+id/checkBox13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/r3" />
+
+                <CheckBox
+                    android:id="@+id/checkBox14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/r4" />
+
+                <CheckBox
+                    android:id="@+id/checkBox15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/r5" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>

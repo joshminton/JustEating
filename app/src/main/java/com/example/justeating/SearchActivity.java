@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
@@ -35,6 +36,9 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<Establishment> establishments;
     private ArrayAdapter establishmentsAdpt;
     public static final String EXTRA_QUERY = "query";
+    public static final String EXTRA_TYPEFILTER = "type";
+    public static final String EXTRA_REGIONFILTER = "region";
+    public static final String EXTRA_AUTHORITYFILTER = "authority";
 
 
     @Override
@@ -42,7 +46,7 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        query = getIntent().getStringExtra("query");
+        query = getIntent().getStringExtra(EXTRA_QUERY);
         establishments = new ArrayList<>();
         establishmentsAdpt = new ArrayAdapter(this, android.R.layout.simple_selectable_list_item, establishments);
         ListView searchResultsList = findViewById(R.id.searchResultsList);
@@ -65,7 +69,18 @@ public class SearchActivity extends AppCompatActivity {
     public void searchEstablishments(){
         listed = true;
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        final String establishmentQuery = "http://api.ratings.food.gov.uk/establishments?name=" + query;
+        String establishmentQuery = "http://api.ratings.food.gov.uk/establishments?name=" + query;
+        if(getIntent().getIntExtra(EXTRA_TYPEFILTER, -1) != -1){
+            System.out.println("yup");
+            establishmentQuery = establishmentQuery.concat("&businessTypeId=" + getIntent().getIntExtra(EXTRA_TYPEFILTER, -1));
+        }
+        System.out.println(establishmentQuery);
+//        if(getIntent().getIntExtra(EXTRA_REGIONFILTER, -1) != -1){
+//            establishmentQuery.concat("&establishmentType=" + getIntent().getIntExtra("query", -1));
+//        }
+//        if(getIntent().getIntExtra(EXTRA_AUTHORITYFILTER, -1) != -1){
+//            establishmentQuery.concat("&establishmentType=" + getIntent().getIntExtra("query", -1));
+//        }
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, establishmentQuery, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -96,33 +111,35 @@ public class SearchActivity extends AppCompatActivity {
 
     public void populateList(JSONArray items){
         establishments.clear();
-        try{
-            for(int i = 0; i<items.length(); i++){
-                JSONObject jo = items.getJSONObject(i);
-                Establishment est = new Establishment(jo.getString("BusinessName"));
-                est.setAddr1(jo.getString("AddressLine1"));
-                est.setAddr2(jo.getString("AddressLine2"));
-                est.setAddr3(jo.getString("AddressLine3"));
-                est.setAddr4(jo.getString("AddressLine4"));
-                est.setPostcode(jo.getString("PostCode"));
-                est.setPhoneNo(jo.getString("Phone"));
-                est.setRating(jo.getString("RatingValue"));
-                est.setHygieneScore(jo.getJSONObject("scores").getString("Hygiene"));
-                est.setStructuralScore(jo.getJSONObject("scores").getString("Structural"));
-                est.setConfidenceScore(jo.getJSONObject("scores").getString("ConfidenceInManagement"));
-                est.setLongitude(jo.getJSONObject("geocode").getString("longitude"));
-                est.setLatitude(jo.getJSONObject("geocode").getString("latitude"));
-                est.setDateRated(jo.getString("RatingDate"));
-                establishments.add(est);
+        if(items.length() == 0){
+            ((TextView) findViewById(R.id.noResultsTxt)).setText(R.string.noResults);
+        }else{
+            try{
+                for(int i = 0; i<items.length(); i++){
+                    JSONObject jo = items.getJSONObject(i);
+                    Establishment est = new Establishment(jo.getString("BusinessName"));
+                    est.setType(jo.getString("BusinessType"));
+                    est.setAddr1(jo.getString("AddressLine1"));
+                    est.setAddr2(jo.getString("AddressLine2"));
+                    est.setAddr3(jo.getString("AddressLine3"));
+                    est.setAddr4(jo.getString("AddressLine4"));
+                    est.setPostcode(jo.getString("PostCode"));
+                    est.setPhoneNo(jo.getString("Phone"));
+                    est.setRating(jo.getString("RatingValue"));
+                    est.setHygieneScore(jo.getJSONObject("scores").getString("Hygiene"));
+                    est.setStructuralScore(jo.getJSONObject("scores").getString("Structural"));
+                    est.setConfidenceScore(jo.getJSONObject("scores").getString("ConfidenceInManagement"));
+                    est.setLongitude(jo.getJSONObject("geocode").getString("longitude"));
+                    est.setLatitude(jo.getJSONObject("geocode").getString("latitude"));
+                    est.setDateRated(jo.getString("RatingDate"));
+                    establishments.add(est);
+                }
             }
+            catch(JSONException err){}
         }
-        catch(JSONException err){}
         establishmentsAdpt.notifyDataSetChanged();
     }
 
-    public void onListItemPressed(View view){
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
