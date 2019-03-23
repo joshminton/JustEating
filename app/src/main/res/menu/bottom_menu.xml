@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/explore_tab"
         android:icon="@drawable/outline_explore_24"
@@ -11,6 +10,6 @@
         android:title="@string/home_tab" />
     <item
         android:id="@+id/favourites_tab"
-        android:icon="@drawable/outline_stars_24"
+        android:icon="@drawable/round_favorite_border_24"
         android:title="@string/favourites_tab" />
 </menu>

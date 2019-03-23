@@ -10,6 +10,7 @@
   <color name="secondaryTextColor">#000000</color>
   <color name="white">#FFFFFF</color>
   <color name="black">#000000</color>
+  <color name = "starYellow">#DDBA05</color>
 
   <color name="rating0">#db4e32</color>
   <color name="rating1">#db8932</color>
@@ -17,4 +18,9 @@
   <color name="rating3">#dbc732</color>
   <color name="rating4">#97db32</color>
   <color name="rating5">#32db40</color>
+  <color name="awaitingInspection">#8F8F8F</color>
+
+  <color name="favourite">#FF0026</color>
+  <color name="notFavourite">#CCCCCC</color>
+
 </resources>

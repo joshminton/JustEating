@@ -22,9 +22,13 @@ public class FilterDialogFragment extends DialogFragment {
     FilterDialogListener listener;
     View dialogView;
     Spinner businessTypeSpinner;
+    Spinner authoritySpinner;
 
     private ArrayList<BusinessType> businessTypes;
     private ArrayAdapter<BusinessType> businessTypeAdpt;
+
+    private ArrayList<Authority> authorities;
+    private ArrayAdapter<Authority> authorityAdapter;
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
     @Override
@@ -55,6 +59,11 @@ public class FilterDialogFragment extends DialogFragment {
         businessTypeAdpt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         businessTypeSpinner.setAdapter(businessTypeAdpt);
 
+        authoritySpinner = dialogView.findViewById(R.id.authoritySpinner);
+        authorityAdapter = new ArrayAdapter(this.getActivity(), android.R.layout.simple_spinner_item, businessTypes);
+        authorityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        authoritySpinner.setAdapter(authorityAdapter);
+
         builder.setView(dialogView)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -71,8 +80,9 @@ public class FilterDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    public void setFilterLists(ArrayList<BusinessType> businessTypes){
+    public void setFilterLists(ArrayList<BusinessType> businessTypes, ArrayList<Authority> authorities){
         this.businessTypes = businessTypes;
+        this.authorities = authorities;
     }
 
     public Integer getSelectedEstab(){
@@ -81,8 +91,6 @@ public class FilterDialogFragment extends DialogFragment {
         } else {
             return -1;
         }
-
-
     }
 
     public Integer getSelectedRegion(){

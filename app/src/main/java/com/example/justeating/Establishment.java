@@ -1,5 +1,10 @@
 package com.example.justeating;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -7,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+@Entity
 public class Establishment implements Serializable {
     public String getName() {
         return name;
@@ -20,27 +26,55 @@ public class Establishment implements Serializable {
         return name;
     }
 
+    @PrimaryKey
+    @NonNull  private Integer id;
+
+    @ColumnInfo(name = "name")
     private String name;
+    @ColumnInfo(name = "type")
     private String type;
+    @ColumnInfo(name = "addr1")
     private String addr1;
+    @ColumnInfo(name = "addr2")
     private String addr2;
+    @ColumnInfo(name = "addr3")
     private String addr3;
+    @ColumnInfo(name = "addr4")
     private String addr4;
+    @ColumnInfo(name = "postcode")
     private String postcode;
+    @ColumnInfo(name = "phoneNo")
     private String phoneNo;
 
+    @ColumnInfo(name = "rating")
     private String rating;
+    @ColumnInfo(name = "hygieneScore")
     private String hygieneScore;
+    @ColumnInfo(name = "structuralScore")
     private String structuralScore;
+    @ColumnInfo(name = "confidenceScore")
     private String confidenceScore;
 
+    private boolean favourite;
+
+    @ColumnInfo(name = "latitude")
     private double latitude;
+    @ColumnInfo(name = "longitude")
     private double longitude;
 
     private Date dateRated;
 
-    public Establishment(String name){
+    private String schemeType;
+
+    public Establishment(String name, Integer id){
         this.name = name;
+        this.id = id;
+        favourite = false;
+    }
+
+    @NonNull
+    public Integer getId() {
+        return id;
     }
 
     public String getAddr1() {
@@ -129,10 +163,14 @@ public class Establishment implements Serializable {
 
     public void setLatitude(String latitude) {
         if(latitude == "null"){
-            this.latitude = Double.MAX_VALUE;
+            setLatitude(Double.MAX_VALUE);
         } else {
-            this.latitude = Double.parseDouble(latitude);
+            setLatitude(Double.parseDouble(latitude));
         }
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
     public double getLongitude() {
@@ -141,10 +179,14 @@ public class Establishment implements Serializable {
 
     public void setLongitude(String longitude) {
         if(longitude == "null"){
-            this.longitude = Double.MAX_VALUE;
+            setLongitude(Double.MAX_VALUE);
         } else {
-            this.longitude = Double.parseDouble(longitude);
+            setLongitude(Double.parseDouble(longitude));
         }
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     public Date getDateRated() {
@@ -154,10 +196,22 @@ public class Establishment implements Serializable {
     public void setDateRated(String dateRated) {
         DateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'MM:HH:SS", Locale.ENGLISH);
         try {
-            this.dateRated = format.parse(dateRated);
+            setDateRated(format.parse(dateRated));
         } catch (ParseException e) {
             System.out.println("Broken date parsing for " + name);
         }
+    }
+
+    public void setDateRated(Date dateRated){
+        this.dateRated = dateRated;
+    }
+
+    public void setId(@NonNull Integer id) {
+        this.id = id;
+    }
+
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
     }
 
     public String getType() {
@@ -166,5 +220,25 @@ public class Establishment implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isFavourite(){
+        return favourite;
+    }
+
+    public void addFavourite(){
+        this.favourite = true;
+    }
+
+    public void removeFavourite(){
+        this.favourite = false;
+    }
+
+    public String getSchemeType() {
+        return schemeType;
+    }
+
+    public void setSchemeType(String schemeType) {
+        this.schemeType = schemeType;
     }
 }

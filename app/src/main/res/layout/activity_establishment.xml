@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primaryDarkColor"
+        android:elevation="4dp"
         android:gravity="left"
         android:orientation="vertical"
         android:paddingLeft="24dp"
@@ -34,7 +35,7 @@
 
         <TextView
             android:id="@+id/establishmentType"
-            android:layout_width="match_parent"
+            android:layout_width="336dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:elevation="1dp"
@@ -78,14 +79,17 @@
 
     <TextView
         android:id="@+id/rating"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:elevation="1dp"
         android:fontFamily="sans-serif-black"
         android:text="TextView"
+        android:textAlignment="textStart"
         android:textAppearance="@android:style/TextAppearance.Material.Display3"
         app:layout_constraintBottom_toBottomOf="@+id/ratingBox"
+        app:layout_constraintEnd_toEndOf="@+id/ratingBox"
         app:layout_constraintStart_toStartOf="@+id/ratingBox"
         app:layout_constraintTop_toTopOf="@+id/ratingBox"
         tools:text="5" />
@@ -133,6 +137,7 @@
         app:layout_constraintTop_toBottomOf="@+id/addressLabel" />
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="214dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -145,7 +150,7 @@
         app:layout_constraintTop_toTopOf="@+id/ratingBox">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/riskHeading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Risks:"
@@ -169,5 +174,18 @@
             android:layout_height="wrap_content"
             android:textAlignment="center" />
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/favouriteFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:onClick="onFavouritePress"
+        app:backgroundTint="@color/notFavourite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/round_favorite_border_36" />
 
 </android.support.constraint.ConstraintLayout>

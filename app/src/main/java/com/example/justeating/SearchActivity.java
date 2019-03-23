@@ -1,23 +1,22 @@
 package com.example.justeating;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -26,7 +25,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SearchActivity extends AppCompatActivity {
@@ -34,11 +35,26 @@ public class SearchActivity extends AppCompatActivity {
     private String query;
     private boolean listed;
     private ArrayList<Establishment> establishments;
-    private ArrayAdapter establishmentsAdpt;
+    private EstablishmentListAdapter establishmentsAdpt;
+    private ArrayList<Integer> favouriteIds;
+    private boolean locationSearch;
+    private double latitude, longitude;
+    private Integer range;
+    private String sortOptionKey;
+    private boolean sortMode;
+    private FloatingActionButton switchSortFab;
+    private Menu menu;
+
     public static final String EXTRA_QUERY = "query";
     public static final String EXTRA_TYPEFILTER = "type";
     public static final String EXTRA_REGIONFILTER = "region";
     public static final String EXTRA_AUTHORITYFILTER = "authority";
+    public static final String EXTRA_IS_LOCATION_SEARCH = "loc_search";
+    public static final String EXTRA_LATITUDE = "lat";
+    public static final String EXTRA_LONGITUDE = "lon";
+    public static final String EXTRA_RANGE = "range";
+
+    private Favourites db;
 
 
     @Override
@@ -46,10 +62,23 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        sortOptionKey = "";
+        switchSortFab = findViewById(R.id.switchSortBtn);
+        switchSortFab.hide();
+
         query = getIntent().getStringExtra(EXTRA_QUERY);
+        locationSearch = getIntent().getBooleanExtra(EXTRA_IS_LOCATION_SEARCH, false);
+        if(locationSearch){
+            latitude = getIntent().getDoubleExtra(EXTRA_LATITUDE, 0.0);
+            longitude = getIntent().getDoubleExtra(EXTRA_LONGITUDE, 0.0);
+            range = getIntent().getIntExtra(EXTRA_RANGE, 0);
+        }
         establishments = new ArrayList<>();
-        establishmentsAdpt = new ArrayAdapter(this, android.R.layout.simple_selectable_list_item, establishments);
+        establishmentsAdpt = new EstablishmentListAdapter(establishments, this, false);
         ListView searchResultsList = findViewById(R.id.searchResultsList);
+
+        db = Room.databaseBuilder(getApplicationContext(), Favourites.class, "favourites").allowMainThreadQueries().build();
+        favouriteIds = new ArrayList<>(db.favouriteDao().retrieveIds());
 
         final AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -60,6 +89,7 @@ public class SearchActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         };
+
         searchResultsList.setOnItemClickListener(itemClickListener);
 
         searchResultsList.setAdapter(establishmentsAdpt);
@@ -69,18 +99,32 @@ public class SearchActivity extends AppCompatActivity {
     public void searchEstablishments(){
         listed = true;
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        String establishmentQuery = "http://api.ratings.food.gov.uk/establishments?name=" + query;
+        String establishmentQuery = "http://api.ratings.food.gov.uk/establishments?";
+
+        if(locationSearch){
+            establishmentQuery = establishmentQuery.concat("longitude=" + longitude);
+            establishmentQuery = establishmentQuery.concat("&latitude=" + latitude);
+            establishmentQuery = establishmentQuery.concat("&maxDistanceLimit=" + range);
+        } else {
+            establishmentQuery = establishmentQuery.concat("name=" + query);
+        }
+
         if(getIntent().getIntExtra(EXTRA_TYPEFILTER, -1) != -1){
-            System.out.println("yup");
             establishmentQuery = establishmentQuery.concat("&businessTypeId=" + getIntent().getIntExtra(EXTRA_TYPEFILTER, -1));
         }
-        System.out.println(establishmentQuery);
 //        if(getIntent().getIntExtra(EXTRA_REGIONFILTER, -1) != -1){
 //            establishmentQuery.concat("&establishmentType=" + getIntent().getIntExtra("query", -1));
 //        }
 //        if(getIntent().getIntExtra(EXTRA_AUTHORITYFILTER, -1) != -1){
 //            establishmentQuery.concat("&establishmentType=" + getIntent().getIntExtra("query", -1));
 //        }
+
+        if(sortOptionKey != ""){
+            establishmentQuery = establishmentQuery.concat("&sortOptionKey=" + sortOptionKey);
+        }
+
+
+        System.out.println(establishmentQuery);
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, establishmentQuery, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -117,7 +161,7 @@ public class SearchActivity extends AppCompatActivity {
             try{
                 for(int i = 0; i<items.length(); i++){
                     JSONObject jo = items.getJSONObject(i);
-                    Establishment est = new Establishment(jo.getString("BusinessName"));
+                    Establishment est = new Establishment(jo.getString("BusinessName"), jo.getInt("FHRSID"));
                     est.setType(jo.getString("BusinessType"));
                     est.setAddr1(jo.getString("AddressLine1"));
                     est.setAddr2(jo.getString("AddressLine2"));
@@ -132,6 +176,12 @@ public class SearchActivity extends AppCompatActivity {
                     est.setLongitude(jo.getJSONObject("geocode").getString("longitude"));
                     est.setLatitude(jo.getJSONObject("geocode").getString("latitude"));
                     est.setDateRated(jo.getString("RatingDate"));
+                    est.setSchemeType(jo.getString("SchemeType"));
+                    if(favouriteIds.contains(jo.getInt("FHRSID"))){
+                        est.setFavourite(true);
+                    }else{
+                        est.setFavourite(false);
+                    }
                     establishments.add(est);
                 }
             }
@@ -145,6 +195,14 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
         return true;
+    }
+
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem sortDistance = menu.findItem(R.id.sortDistance);
+        if(!locationSearch){
+            sortDistance.setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -168,8 +226,47 @@ public class SearchActivity extends AppCompatActivity {
             case R.id.rated_5:
                 item.setChecked(true);
                 return true;
+            case R.id.sortRating:
+                sortOptionKey = "rating";
+                searchEstablishments();
+                switchSortFab.show();
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        favouriteIds = new ArrayList<>(db.favouriteDao().retrieveIds());
+        for(Establishment estab : establishments){
+            if(favouriteIds.contains(estab.getId())){
+                estab.setFavourite(true);
+            } else {
+                estab.setFavourite(false);
+            }
+        }
+        establishmentsAdpt.notifyDataSetChanged();
+        ((ListView) findViewById(R.id.searchResultsList)).invalidateViews();
+    }
+
+    public void onSwitchSortPress(View view){
+        Collections.reverse(establishments);
+        establishmentsAdpt.notifyDataSetChanged();
+    }
+
+//    public Comparator<Establishment> ratingComparison(){
+//
+//    }
+
+//    public class RatingComparator implements Comparator<Establishment> {
+//
+//        @Override
+//        public int compare(Establishment a, Establishment b) {
+//            if(a.getSchemeType() == "FHRS" && b.getSchemeType() == "FHRS"){
+//                return Integer.parseInt(a.getRating()) - (Integer.parseInt(b.getRating());
+//            }
+//        }
+//    }
+
 }

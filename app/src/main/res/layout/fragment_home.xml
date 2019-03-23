@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".HomeFragment">
 
 
     <Button
@@ -41,7 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:onClick="onSearchPress"
         android:text="@string/search"
         app:layout_constraintEnd_toEndOf="@+id/searchBox"
         app:layout_constraintTop_toBottomOf="@+id/searchBox" />
@@ -52,14 +51,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="onFilterPress"
         android:text="@string/filter"
         app:layout_constraintStart_toStartOf="@+id/searchBox"
         app:layout_constraintTop_toBottomOf="@+id/searchBox" />
 
     <SeekBar
         android:id="@+id/rangeSeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        style="@android:style/Widget.Material.Light.SeekBar"
         android:layout_width="241dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
@@ -81,4 +79,5 @@
         app:layout_constraintEnd_toEndOf="@+id/locationSearchBtn"
         app:layout_constraintStart_toStartOf="@+id/locationSearchBtn"
         app:layout_constraintTop_toBottomOf="@+id/locationSearchBtn" />
+
 </android.support.constraint.ConstraintLayout>
