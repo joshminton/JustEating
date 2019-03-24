@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -53,14 +54,21 @@ public class SearchActivity extends AppCompatActivity {
     public static final String EXTRA_LATITUDE = "lat";
     public static final String EXTRA_LONGITUDE = "lon";
     public static final String EXTRA_RANGE = "range";
+    public static final String EXTRA_RATINGSQUERY = "ratings_query";
 
     private Favourites db;
+
+    ProgressBar searchProgressBar;
+    ListView searchResultsList;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        searchProgressBar = findViewById(R.id.searchProgressBar);
+        searchProgressBar.setIndeterminate(true);
 
         sortOptionKey = "";
         switchSortFab = findViewById(R.id.switchSortBtn);
@@ -75,7 +83,7 @@ public class SearchActivity extends AppCompatActivity {
         }
         establishments = new ArrayList<>();
         establishmentsAdpt = new EstablishmentListAdapter(establishments, this, false);
-        ListView searchResultsList = findViewById(R.id.searchResultsList);
+        searchResultsList = findViewById(R.id.searchResultsList);
 
         db = Room.databaseBuilder(getApplicationContext(), Favourites.class, "favourites").allowMainThreadQueries().build();
         favouriteIds = new ArrayList<>(db.favouriteDao().retrieveIds());
@@ -97,21 +105,31 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void searchEstablishments(){
+        searchProgressBar.setVisibility(View.VISIBLE);
+        searchResultsList.setVisibility(View.INVISIBLE);
         listed = true;
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         String establishmentQuery = "http://api.ratings.food.gov.uk/establishments?";
 
+        establishmentQuery = establishmentQuery.concat("schemeTypeKey=FHRS");
+
+
         if(locationSearch){
-            establishmentQuery = establishmentQuery.concat("longitude=" + longitude);
+            establishmentQuery = establishmentQuery.concat("&longitude=" + longitude);
             establishmentQuery = establishmentQuery.concat("&latitude=" + latitude);
             establishmentQuery = establishmentQuery.concat("&maxDistanceLimit=" + range);
         } else {
-            establishmentQuery = establishmentQuery.concat("name=" + query);
+            establishmentQuery = establishmentQuery.concat("&name=" + query);
         }
 
         if(getIntent().getIntExtra(EXTRA_TYPEFILTER, -1) != -1){
             establishmentQuery = establishmentQuery.concat("&businessTypeId=" + getIntent().getIntExtra(EXTRA_TYPEFILTER, -1));
         }
+
+        if(getIntent().getIntExtra(EXTRA_AUTHORITYFILTER, -1) != -1){
+            establishmentQuery = establishmentQuery.concat("&localAuthorityId=" + getIntent().getIntExtra(EXTRA_AUTHORITYFILTER, -1));
+        }
+
 //        if(getIntent().getIntExtra(EXTRA_REGIONFILTER, -1) != -1){
 //            establishmentQuery.concat("&establishmentType=" + getIntent().getIntExtra("query", -1));
 //        }
@@ -121,6 +139,10 @@ public class SearchActivity extends AppCompatActivity {
 
         if(sortOptionKey != ""){
             establishmentQuery = establishmentQuery.concat("&sortOptionKey=" + sortOptionKey);
+        }
+
+        if(getIntent().getStringExtra(EXTRA_RATINGSQUERY) != null){
+            establishmentQuery = establishmentQuery.concat(getIntent().getStringExtra(EXTRA_RATINGSQUERY));
         }
 
 
@@ -188,6 +210,9 @@ public class SearchActivity extends AppCompatActivity {
             catch(JSONException err){}
         }
         establishmentsAdpt.notifyDataSetChanged();
+        ((ProgressBar) findViewById(R.id.searchProgressBar)).setVisibility(View.INVISIBLE);
+        searchResultsList.setVisibility(View.VISIBLE);
+
     }
 
 

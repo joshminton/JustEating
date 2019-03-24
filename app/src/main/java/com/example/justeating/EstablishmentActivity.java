@@ -46,51 +46,46 @@ public class EstablishmentActivity extends AppCompatActivity {
 
         TextView ratingDescription = (findViewById(R.id.ratingDescriptorText));
 
-        if(establishment.getSchemeType().equals("FHRS")) {
-            if(establishment.getRating().equals("AwaitingInspection")){
-                ((TextView) findViewById(R.id.rating)).setText("Awaiting Inspection");
-                ((TextView) findViewById(R.id.rating)).setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                ((TextView) findViewById(R.id.rating)).setTextSize(20);
-                ((TextView) findViewById(R.id.riskHeading)).setVisibility(View.INVISIBLE);
-                ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.awaitingInspection));
-                ratingDescription.setText("");
-            } else {
-                ((TextView) findViewById(R.id.rating)).setText(establishment.getRating());
-                switch (establishment.getRating()) {
-                    case "0":
-                        ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating0));
-                        ratingDescription.setText(R.string.rate0Desc);
-                        break;
-                    case "1":
-                        ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating1));
-                        ratingDescription.setText(R.string.rate1Desc);
-                        break;
-                    case "2":
-                        ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating2));
-                        ratingDescription.setText(R.string.rate2Desc);
-                        break;
-                    case "3":
-                        ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating3));
-                        ratingDescription.setText(R.string.rate3Desc);
-                        break;
-                    case "4":
-                        ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating4));
-                        ratingDescription.setText(R.string.rate4Desc);
-                        break;
-                    case "5":
-                        ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating5));
-                        ratingDescription.setText(R.string.rate5Desc);
-                        break;
-                }
-
-                ((TextView) findViewById(R.id.hygieneLabel)).setText("Hygiene: " + establishment.getHygieneScore() + "/25");
-                ((TextView) findViewById(R.id.structuralLabel)).setText("Structural: " + establishment.getStructuralScore() + "/25");
-                ((TextView) findViewById(R.id.confMangmntLabel)).setText("Management: " + establishment.getConfidenceScore() + "/30");
+        if(establishment.getRating().equals("AwaitingInspection") || establishment.getRating().equals("Exempt")){
+            ((TextView) findViewById(R.id.rating)).setText(establishment.getRating());
+            ((TextView) findViewById(R.id.rating)).setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            ((TextView) findViewById(R.id.rating)).setTextSize(20);
+            ((TextView) findViewById(R.id.riskHeading)).setVisibility(View.INVISIBLE);
+            ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.awaitingInspection));
+            ratingDescription.setText("");
+        } else {
+            ((TextView) findViewById(R.id.rating)).setText(establishment.getRating());
+            switch (establishment.getRating()) {
+                case "0":
+                    ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating0));
+                    ratingDescription.setText(R.string.rate0Desc);
+                    break;
+                case "1":
+                    ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating1));
+                    ratingDescription.setText(R.string.rate1Desc);
+                    break;
+                case "2":
+                    ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating2));
+                    ratingDescription.setText(R.string.rate2Desc);
+                    break;
+                case "3":
+                    ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating3));
+                    ratingDescription.setText(R.string.rate3Desc);
+                    break;
+                case "4":
+                    ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating4));
+                    ratingDescription.setText(R.string.rate4Desc);
+                    break;
+                case "5":
+                    ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.rating5));
+                    ratingDescription.setText(R.string.rate5Desc);
+                    break;
             }
+
+            ((TextView) findViewById(R.id.hygieneLabel)).setText("Hygiene: " + establishment.getHygieneScore() + "/25");
+            ((TextView) findViewById(R.id.structuralLabel)).setText("Structural: " + establishment.getStructuralScore() + "/25");
+            ((TextView) findViewById(R.id.confMangmntLabel)).setText("Management: " + establishment.getConfidenceScore() + "/30");
         }
-
-
-
 
         String address = "";
         if(establishment.getAddr1() != ""){

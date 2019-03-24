@@ -9,11 +9,15 @@
 
     <Button
         android:id="@+id/locationSearchBtn"
+        android:strokeWidth="6"
+        android:strokeColor="@color/secondaryColor"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="233dp"
         android:layout_height="63dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="128dp"
         android:layout_marginEnd="8dp"
+        android:textSize="14sp"
         android:text="@string/searchByLocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,20 +41,24 @@
 
     <Button
         android:id="@+id/searchBtn"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="88dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/search"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/searchBox"
         app:layout_constraintTop_toBottomOf="@+id/searchBox" />
 
     <Button
         android:id="@+id/filterBtn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textSize="14sp"
         android:text="@string/filter"
         app:layout_constraintStart_toStartOf="@+id/searchBox"
         app:layout_constraintTop_toBottomOf="@+id/searchBox" />

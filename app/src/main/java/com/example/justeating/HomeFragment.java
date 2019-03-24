@@ -49,8 +49,10 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
 
     ArrayList<BusinessType> businessTypes = new ArrayList<>();
     ArrayList<Authority> authorities = new ArrayList<>();
+    ArrayList<String> regions = new ArrayList<>();
 
     Integer estabFilter = -1, regionFilter = -1, authorityFilter = -1;
+    String ratingFilterQuery = "";
 
     private final int FINE_LOCATION_PERMISSION = 1;
     private double latitude, longitude;
@@ -135,9 +137,6 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
 
             }
         });
-
-
-
     }
 
     protected void importFilters(){
@@ -197,6 +196,34 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
             }
         };
         requestQueue.add(authorityRequest);
+
+        final String regionsQuery = "http://api.ratings.food.gov.uk/Regions";
+        JsonObjectRequest regionRequest = new JsonObjectRequest(Request.Method.GET, regionsQuery, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("Got response.");
+                        try {
+                            importRegions(response.getJSONArray("regions"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("x-api-version", "2");
+                return headers;
+            }
+        };
+        requestQueue.add(regionRequest);
     }
 
     public HomeFragment() {
@@ -214,6 +241,7 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
         searchIntent.putExtra(SearchActivity.EXTRA_REGIONFILTER, regionFilter);
         searchIntent.putExtra(SearchActivity.EXTRA_AUTHORITYFILTER, authorityFilter);
         searchIntent.putExtra(SearchActivity.EXTRA_IS_LOCATION_SEARCH, false);
+        searchIntent.putExtra(SearchActivity.EXTRA_RATINGSQUERY, ratingFilterQuery);
 
         startActivity(searchIntent);
     }
@@ -236,21 +264,23 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
         searchIntent.putExtra(SearchActivity.EXTRA_LATITUDE, latitude);
         searchIntent.putExtra(SearchActivity.EXTRA_LONGITUDE, longitude);
         searchIntent.putExtra(SearchActivity.EXTRA_RANGE, range);
+        searchIntent.putExtra(SearchActivity.EXTRA_RATINGSQUERY, ratingFilterQuery);
 
         startActivity(searchIntent);
     }
 
     public void onFilterPress(View view){
         FilterDialogFragment filterDialogFragment = new FilterDialogFragment();
-        filterDialogFragment.setFilterLists(businessTypes, authorities);
+        filterDialogFragment.setFilterLists(businessTypes, authorities, regions);
         filterDialogFragment.show(getFragmentManager(), "filter");
     }
 
     public void onFilterOKClick(FilterDialogFragment dialog){
         System.out.println(dialog.getSelectedEstab());
         estabFilter = dialog.getSelectedEstab();
-        regionFilter = dialog.getSelectedRegion();
         authorityFilter = dialog.getSelectedAuthority();
+        ratingFilterQuery = dialog.getRatingsQuery();
+
     }
 
     public void importEstablishmentTypes(JSONArray establishmentTypes){
@@ -267,7 +297,18 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
         try{
             for(int i = 0; i<authoritiesList.length(); i++){
                 JSONObject jo = authoritiesList.getJSONObject(i);
-                authorities.add(new Authority(jo.getInt("LocalAuthorityId"), jo.getString("Name")));
+                authorities.add(new Authority(jo.getInt("LocalAuthorityId"), jo.getString("Name"), jo.getString("RegionName")));
+            }
+        }
+        catch(JSONException err){}
+    }
+
+    public void importRegions(JSONArray regionsList){
+        regions.add("None");
+        try{
+            for(int i = 0; i<regionsList.length(); i++){
+                JSONObject jo = regionsList.getJSONObject(i);
+                regions.add(jo.getString("name"));
             }
         }
         catch(JSONException err){}
@@ -275,7 +316,6 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
 
     @Override
     public void onClick(View v) {
-        System.out.println("hmmm");
         switch(v.getId()) {
             case R.id.searchBtn:
                 onSearchPress(v);

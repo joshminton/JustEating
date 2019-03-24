@@ -56,6 +56,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/rounded_corner_top"
+        android:clickable="false"
         android:elevation="1dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +105,7 @@
         android:textAllCaps="true"
         android:textAppearance="@android:style/TextAppearance.Material.Title"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/ratingSubBox"
         app:layout_constraintEnd_toEndOf="@+id/ratingSubBox"
         app:layout_constraintStart_toStartOf="@+id/ratingSubBox"
@@ -154,7 +155,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Risks:"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/hygieneLabel"
