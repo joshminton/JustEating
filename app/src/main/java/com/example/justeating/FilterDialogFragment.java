@@ -187,7 +187,11 @@ public class FilterDialogFragment extends DialogFragment {
     }
 
     public Integer getSelectedAuthority(){
-        return ((Authority) authoritySpinner.getSelectedItem()).getId();
+        if(authoritySpinner.getSelectedItem() != null){
+            return ((Authority) authoritySpinner.getSelectedItem()).getId();
+        } else {
+            return -1;
+        }
     }
 
     public String getRatingsQuery(){

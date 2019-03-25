@@ -3,6 +3,7 @@ package com.example.justeating;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.v4.app.DialogFragment;
@@ -74,5 +75,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public void onFilterOKClick(FilterDialogFragment dialog) {
         homeFragment.onFilterOKClick(dialog);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        System.out.println("HERE WE AREEEEEE");
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        homeFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

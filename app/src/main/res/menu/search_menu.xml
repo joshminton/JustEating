@@ -42,13 +42,21 @@
         android:title="Sort"
         app:showAsAction="ifRoom">
         <menu>
-            <group android:id="@+id/sortGroup">
+            <group
+                android:id="@+id/sortGroup"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/sortNone"
+                    android:title="None" />
                 <item
                     android:id="@+id/sortRating"
                     android:title="Rating" />
                 <item
                     android:id="@+id/sortDistance"
                     android:title="Distance" />
+                <item
+                    android:id="@+id/sortDate"
+                    android:title="Date Rated" />
             </group>
         </menu>
     </item>

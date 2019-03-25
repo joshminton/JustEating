@@ -51,31 +51,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void attachLocManager(){
-        LocationListener locListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                updateMap();
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) { }
-
-            @Override
-            public void onProviderEnabled(String provider) { }
-
-            @Override
-            public void onProviderDisabled(String provider) { }
-        };
-
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locListener);
-        } catch(SecurityException err){
-            //log here
-        }
 
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
@@ -96,6 +71,25 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
                 requestLocPerms();
             }
         }
+
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                updateMap();
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+            @Override
+            public void onProviderEnabled(String provider) { }
+
+            @Override
+            public void onProviderDisabled(String provider) { }
+        };
 
         Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
@@ -127,6 +121,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
         this.googleMap = googleMap;
         updateMap();
     }
+
+
 
     public void updateMap() {
 //        googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Your location!"));

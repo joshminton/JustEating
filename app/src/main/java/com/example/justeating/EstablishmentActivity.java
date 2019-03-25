@@ -23,6 +23,9 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class EstablishmentActivity extends AppCompatActivity {
 
     Establishment establishment;
@@ -53,6 +56,7 @@ public class EstablishmentActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.riskHeading)).setVisibility(View.INVISIBLE);
             ((GradientDrawable) findViewById(R.id.ratingBox).getBackground()).setColor(getResources().getColor(R.color.awaitingInspection));
             ratingDescription.setText("");
+            ((TextView) findViewById(R.id.dateRatedText)).setText("");
         } else {
             ((TextView) findViewById(R.id.rating)).setText(establishment.getRating());
             switch (establishment.getRating()) {
@@ -85,6 +89,9 @@ public class EstablishmentActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.hygieneLabel)).setText("Hygiene: " + establishment.getHygieneScore() + "/25");
             ((TextView) findViewById(R.id.structuralLabel)).setText("Structural: " + establishment.getStructuralScore() + "/25");
             ((TextView) findViewById(R.id.confMangmntLabel)).setText("Management: " + establishment.getConfidenceScore() + "/30");
+
+            DateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
+            ((TextView) findViewById(R.id.dateRatedText)).setText("Date rated: " + dateFormat.format(establishment.getDateRated()));
         }
 
         String address = "";
@@ -150,6 +157,10 @@ public class EstablishmentActivity extends AppCompatActivity {
             db.favouriteDao().insertEstablishment(establishment);
         }
         toggleFAB();
+    }
+
+    public void onMapPress(View view){
+
     }
 
     private void toggleFAB(){

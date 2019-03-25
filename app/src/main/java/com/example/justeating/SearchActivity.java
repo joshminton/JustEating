@@ -27,7 +27,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,7 @@ public class SearchActivity extends AppCompatActivity {
     private String query;
     private boolean listed;
     private ArrayList<Establishment> establishments;
+    private ArrayList<Establishment> originalEstablishments;
     private EstablishmentListAdapter establishmentsAdpt;
     private ArrayList<Integer> favouriteIds;
     private boolean locationSearch;
@@ -73,6 +76,7 @@ public class SearchActivity extends AppCompatActivity {
         sortOptionKey = "";
         switchSortFab = findViewById(R.id.switchSortBtn);
         switchSortFab.hide();
+        sortMode = false;
 
         query = getIntent().getStringExtra(EXTRA_QUERY);
         locationSearch = getIntent().getBooleanExtra(EXTRA_IS_LOCATION_SEARCH, false);
@@ -102,6 +106,7 @@ public class SearchActivity extends AppCompatActivity {
 
         searchResultsList.setAdapter(establishmentsAdpt);
         searchEstablishments();
+
     }
 
     public void searchEstablishments(){
@@ -209,6 +214,10 @@ public class SearchActivity extends AppCompatActivity {
             }
             catch(JSONException err){}
         }
+        if(!sortMode){
+            originalEstablishments = new ArrayList<>();
+            originalEstablishments.addAll(establishments);
+        }
         establishmentsAdpt.notifyDataSetChanged();
         ((ProgressBar) findViewById(R.id.searchProgressBar)).setVisibility(View.INVISIBLE);
         searchResultsList.setVisibility(View.VISIBLE);
@@ -227,6 +236,7 @@ public class SearchActivity extends AppCompatActivity {
         if(!locationSearch){
             sortDistance.setVisible(false);
         }
+        menu.getItem(1).getSubMenu().getItem(0).setChecked(true);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -251,10 +261,30 @@ public class SearchActivity extends AppCompatActivity {
             case R.id.rated_5:
                 item.setChecked(true);
                 return true;
+            case R.id.sortNone:
+                establishments = originalEstablishments;
+                establishmentsAdpt.notifyDataSetChanged();
+                item.setChecked(true);
+                switchSortFab.hide();
+                sortMode = true;
+                return true;
             case R.id.sortRating:
                 sortOptionKey = "rating";
                 searchEstablishments();
+                putAtEnd();
+                establishmentsAdpt.notifyDataSetChanged();
+                item.setChecked(true);
                 switchSortFab.show();
+                sortMode = true;
+                return true;
+            case R.id.sortDate:
+                Collections.sort(establishments, new DateComparator());
+                putAtEnd();
+                establishmentsAdpt.notifyDataSetChanged();
+                item.setChecked(true);
+                switchSortFab.show();
+                sortMode = true;
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -284,14 +314,23 @@ public class SearchActivity extends AppCompatActivity {
 //
 //    }
 
-//    public class RatingComparator implements Comparator<Establishment> {
-//
-//        @Override
-//        public int compare(Establishment a, Establishment b) {
-//            if(a.getSchemeType() == "FHRS" && b.getSchemeType() == "FHRS"){
-//                return Integer.parseInt(a.getRating()) - (Integer.parseInt(b.getRating());
-//            }
-//        }
-//    }
+    public class DateComparator implements Comparator<Establishment> {
+        @Override
+        public int compare(Establishment a, Establishment b) {
+            return a.getDateRated().compareTo(b.getDateRated());
+        }
+    }
+
+    public void putAtEnd(){
+        Iterator<Establishment> establishmentIterator = establishments.iterator();
+        ArrayList<Establishment> endEstablishments = new ArrayList<>();
+        while(establishmentIterator.hasNext()){
+            Establishment est = establishmentIterator.next();
+            if(est.getRating().equals("Exempt") || est.getRating().equals("AwaitingInspection")){
+                endEstablishments.add(est);
+                establishmentIterator.remove();
+            }
+        }
+    }
 
 }
