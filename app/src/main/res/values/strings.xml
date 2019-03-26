@@ -3,6 +3,7 @@
     <string name="explore_tab">Explore</string>
     <string name="home_tab">Search</string>
     <string name="favourites_tab">Favourites</string>
+    <string name="camera_tab">Photo</string>
 
     <string name="sample">sample</string>
 
@@ -43,5 +44,7 @@
 
     <string name="noResults">No establishments found :(</string>
     <string name="noFavourites">You don\'t have any favourites currently - add some using the star buttons!</string>
+
+    <string name="shareImageText">Share image to &#8230;</string>
 
 </resources>

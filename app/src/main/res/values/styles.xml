@@ -17,5 +17,12 @@
         <item name="strokeWidth">2dp</item>
     </style>
 
+    <style name="photoCaptionText">
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">10</item>
+    </style>
+
 
 </resources>

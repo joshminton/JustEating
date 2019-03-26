@@ -202,13 +202,13 @@ public class FilterDialogFragment extends DialogFragment {
             case "any":
                 return "";
             case "exactly":
-                query = query.concat("6");
+                query = query.concat("Equal");
                 break;
             case "maximum":
-                query = query.concat("9");
+                query = query.concat("GreaterThanOrEqual");
                 break;
             case "minimum":
-                query = query.concat("8");
+                query = query.concat("LessThanOrEqual");
                 break;
         }
         return query.concat("&ratingKey=").concat(val);

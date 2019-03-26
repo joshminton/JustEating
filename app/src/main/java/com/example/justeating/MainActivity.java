@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     HomeFragment homeFragment = new HomeFragment();
     ExploreFragment exploreFragment = new ExploreFragment();
     FavouritesFragment favouritesFragment = new FavouritesFragment();
+    CameraFragment cameraFragment = new CameraFragment();
 
 
     @Override
@@ -64,8 +65,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.favourites_tab:
                 fT.replace(R.id.frag_frame, favouritesFragment);
                 break;
-            case R.id.explore_tab:
-                fT.replace(R.id.frag_frame, exploreFragment);
+            case R.id.camera_tab:
+                fT.replace(R.id.frag_frame, cameraFragment);
                 break;
         }
         fT.commit();
@@ -77,10 +78,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         homeFragment.onFilterOKClick(dialog);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        System.out.println("HERE WE AREEEEEE");
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        homeFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//        System.out.println("Main Activity");
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        homeFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//    }
 }

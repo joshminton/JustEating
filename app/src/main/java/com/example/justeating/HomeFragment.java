@@ -293,9 +293,14 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
         }
 
 
-        while(waitingForPermission){
-            System.out.println("Heyeyeye");
-        }
+//        while(waitingForPermission){
+//            try {
+//                Thread.sleep(50);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            System.out.println("Loop");
+//        }
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -318,6 +323,8 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
             searchIntent.putExtra(SearchActivity.EXTRA_RATINGSQUERY, ratingFilterQuery);
 
             startActivity(searchIntent);
+        } else {
+            System.out.println("No permission.");
         }
     }
 
@@ -387,7 +394,7 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
     }
 
     public void requestLocPerms() {
-        HomeFragment.this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_PERMISSION);
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_PERMISSION);
     }
 
     public void attachLocManager(){
@@ -401,12 +408,11 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        System.out.println("GOT HERE");
+        System.out.println("onRequestPermissionsResult");
         switch(requestCode){
             case FINE_LOCATION_PERMISSION: {
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     waitingForPermission = false;
-                    System.out.println(waitingForPermission);
                     attachLocManager();
                 } else {
                 }
