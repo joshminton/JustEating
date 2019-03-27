@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -140,6 +141,11 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
 
             }
         });
+
+        rangeBar.setProgress(0);
+
+//        ((TextView) getActivity().findViewById(R.id.rangeText)).setText(rangeStr);
+
     }
 
     protected void importFilters(){
@@ -250,82 +256,19 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
     }
 
     public void onLocationSearchPress(View view){
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-            }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) { }
+        EditText searchBox = getActivity().findViewById(R.id.searchBox);
 
-            @Override
-            public void onProviderEnabled(String provider) { }
+        Intent searchIntent = new Intent(this.getContext(), SearchActivity.class);
 
-            @Override
-            public void onProviderDisabled(String provider) { }
-        };
+        searchIntent.putExtra(SearchActivity.EXTRA_TYPEFILTER, estabFilter);
+        searchIntent.putExtra(SearchActivity.EXTRA_REGIONFILTER, regionFilter);
+        searchIntent.putExtra(SearchActivity.EXTRA_AUTHORITYFILTER, authorityFilter);
+        searchIntent.putExtra(SearchActivity.EXTRA_IS_LOCATION_SEARCH, true);
+        searchIntent.putExtra(SearchActivity.EXTRA_RANGE, range);
+        searchIntent.putExtra(SearchActivity.EXTRA_RATINGSQUERY, ratingFilterQuery);
 
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
-            waitingForPermission = true;
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                new AlertDialog.Builder(getContext()) //getContext?
-                        .setMessage(R.string.location_request)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                requestLocPerms();
-                            }
-                        })
-                        .create()
-                        .show();
-            } else {
-                requestLocPerms();
-            }
-        } else {
-            attachLocManager();
-            waitingForPermission = false;
-        }
-
-
-//        while(waitingForPermission){
-//            try {
-//                Thread.sleep(50);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            System.out.println("Loop");
-//        }
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-            latitude = loc.getLatitude();
-            longitude = loc.getLongitude();
-
-            EditText searchBox = getActivity().findViewById(R.id.searchBox);
-            String query = searchBox.getText().toString();
-
-            Intent searchIntent = new Intent(this.getContext(), SearchActivity.class);
-
-            searchIntent.putExtra(SearchActivity.EXTRA_TYPEFILTER, estabFilter);
-            searchIntent.putExtra(SearchActivity.EXTRA_REGIONFILTER, regionFilter);
-            searchIntent.putExtra(SearchActivity.EXTRA_AUTHORITYFILTER, authorityFilter);
-            searchIntent.putExtra(SearchActivity.EXTRA_IS_LOCATION_SEARCH, true);
-            searchIntent.putExtra(SearchActivity.EXTRA_LATITUDE, latitude);
-            searchIntent.putExtra(SearchActivity.EXTRA_LONGITUDE, longitude);
-            searchIntent.putExtra(SearchActivity.EXTRA_RANGE, range);
-            searchIntent.putExtra(SearchActivity.EXTRA_RATINGSQUERY, ratingFilterQuery);
-
-            startActivity(searchIntent);
-        } else {
-            System.out.println("No permission.");
-        }
+        startActivity(searchIntent);
     }
 
     public void onFilterPress(View view){
@@ -393,31 +336,20 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
         return kilometres * 0.621371;
     }
 
-    public void requestLocPerms() {
-        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_PERMISSION);
-    }
 
-    public void attachLocManager(){
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
-        } catch(SecurityException err){
-            //log here
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        System.out.println("onRequestPermissionsResult");
-        switch(requestCode){
-            case FINE_LOCATION_PERMISSION: {
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    waitingForPermission = false;
-                    attachLocManager();
-                } else {
-                }
-                return;
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        System.out.println("onRequestPermissionsResult");
+//        switch(requestCode){
+//            case FINE_LOCATION_PERMISSION: {
+//                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    waitingForPermission = false;
+//                    attachLocManager();
+//                } else {
+//                }
+//                return;
+//            }
+//        }
+//    }
 }

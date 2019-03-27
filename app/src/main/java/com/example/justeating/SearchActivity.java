@@ -1,8 +1,20 @@
 package com.example.justeating;
 
+import android.Manifest;
 import android.arch.persistence.room.Room;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ProviderInfo;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -49,6 +61,12 @@ public class SearchActivity extends AppCompatActivity {
     private FloatingActionButton switchSortFab;
     private Menu menu;
 
+    private LocationManager locManager;
+    private LocationListener locListener;
+    private final int FINE_LOCATION_PERMISSION = 1;
+    private boolean waitingForPermission;
+    private boolean gotLoc;
+
     public static final String EXTRA_QUERY = "query";
     public static final String EXTRA_TYPEFILTER = "type";
     public static final String EXTRA_REGIONFILTER = "region";
@@ -80,11 +98,76 @@ public class SearchActivity extends AppCompatActivity {
 
         query = getIntent().getStringExtra(EXTRA_QUERY);
         locationSearch = getIntent().getBooleanExtra(EXTRA_IS_LOCATION_SEARCH, false);
-        if(locationSearch){
-            latitude = getIntent().getDoubleExtra(EXTRA_LATITUDE, 0.0);
-            longitude = getIntent().getDoubleExtra(EXTRA_LONGITUDE, 0.0);
-            range = getIntent().getIntExtra(EXTRA_RANGE, 0);
+        if (locationSearch) {
+
+            locListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    System.out.println("UPDATE");
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    gotLoc = true;
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            };
+
+            locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            waitingForPermission = true;
+
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    new AlertDialog.Builder(this)
+                            .setMessage(R.string.location_request)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    requestLocPerms();
+                                }
+                            })
+                            .create()
+                            .show();
+                } else {
+                    requestLocPerms();
+                }
+            } else {
+                attachLocManager();
+                continueSearch();
+            }
         }
+
+        continueSearch();
+    }
+
+
+    public void continueSearch() {
+
+        if(locationSearch){
+
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_DENIED) {
+                locManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locListener, Looper.myLooper());
+                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);
+            }
+        }
+
+        range = getIntent().getIntExtra(EXTRA_RANGE, 0);
         establishments = new ArrayList<>();
         establishmentsAdpt = new EstablishmentListAdapter(establishments, this, false);
         searchResultsList = findViewById(R.id.searchResultsList);
@@ -106,8 +189,8 @@ public class SearchActivity extends AppCompatActivity {
 
         searchResultsList.setAdapter(establishmentsAdpt);
         searchEstablishments();
-
     }
+
 
     public void searchEstablishments(){
         searchProgressBar.setVisibility(View.VISIBLE);
@@ -123,8 +206,16 @@ public class SearchActivity extends AppCompatActivity {
             establishmentQuery = establishmentQuery.concat("&longitude=" + longitude);
             establishmentQuery = establishmentQuery.concat("&latitude=" + latitude);
             establishmentQuery = establishmentQuery.concat("&maxDistanceLimit=" + range);
+            if(sortOptionKey != ""){
+                establishmentQuery = establishmentQuery.concat("&sortOptionKey=" + sortOptionKey);
+            } else {
+                establishmentQuery = establishmentQuery.concat("&sortOptionKey=" + "distance");
+            }
         } else {
             establishmentQuery = establishmentQuery.concat("&name=" + query);
+            if(sortOptionKey != ""){
+                establishmentQuery = establishmentQuery.concat("&sortOptionKey=" + sortOptionKey);
+            }
         }
 
         if(getIntent().getIntExtra(EXTRA_TYPEFILTER, -1) != -1){
@@ -133,17 +224,6 @@ public class SearchActivity extends AppCompatActivity {
 
         if(getIntent().getIntExtra(EXTRA_AUTHORITYFILTER, -1) != -1){
             establishmentQuery = establishmentQuery.concat("&localAuthorityId=" + getIntent().getIntExtra(EXTRA_AUTHORITYFILTER, -1));
-        }
-
-//        if(getIntent().getIntExtra(EXTRA_REGIONFILTER, -1) != -1){
-//            establishmentQuery.concat("&establishmentType=" + getIntent().getIntExtra("query", -1));
-//        }
-//        if(getIntent().getIntExtra(EXTRA_AUTHORITYFILTER, -1) != -1){
-//            establishmentQuery.concat("&establishmentType=" + getIntent().getIntExtra("query", -1));
-//        }
-
-        if(sortOptionKey != ""){
-            establishmentQuery = establishmentQuery.concat("&sortOptionKey=" + sortOptionKey);
         }
 
         if(getIntent().getStringExtra(EXTRA_RATINGSQUERY) != null){
@@ -236,7 +316,12 @@ public class SearchActivity extends AppCompatActivity {
         if(!locationSearch){
             sortDistance.setVisible(false);
         }
-        menu.getItem(1).getSubMenu().getItem(0).setChecked(true);
+        menu.findItem(R.id.sort).getSubMenu().findItem(R.id.sortNone).setChecked(true);
+
+        for(int x = 0; x < menu.findItem(R.id.filter).getSubMenu().findItem(R.id.ratingFilter).getSubMenu().size(); x++){
+            menu.getItem(0).getSubMenu().getItem(0).getSubMenu().getItem(x).setChecked(true);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -244,22 +329,22 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.rated_0:
-               item.setChecked(true);
+               item.setChecked(!item.isChecked());
                 return true;
             case R.id.rated_1:
-                item.setChecked(true);
+                item.setChecked(!item.isChecked());
                 return true;
             case R.id.rated_2:
-                item.setChecked(true);
+                item.setChecked(!item.isChecked());
                 return true;
             case R.id.rated_3:
-                item.setChecked(true);
+                item.setChecked(!item.isChecked());
                 return true;
             case R.id.rated_4:
-                item.setChecked(true);
+                item.setChecked(!item.isChecked());
                 return true;
             case R.id.rated_5:
-                item.setChecked(true);
+                item.setChecked(!item.isChecked());
                 return true;
             case R.id.sortNone:
                 establishments = originalEstablishments;
@@ -332,5 +417,34 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void attachLocManager() {
+        try {
+            locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    1000, 0, locListener);
+        } catch (SecurityException err) {
+        }
+    }
+
+    public void requestLocPerms() {
+        ActivityCompat.requestPermissions(SearchActivity.this, new String[]
+                {Manifest.permission.ACCESS_FINE_LOCATION}, FINE_LOCATION_PERMISSION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch(requestCode){
+            case FINE_LOCATION_PERMISSION: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    attachLocManager();
+                    continueSearch();
+                } else {
+                    this.finish();
+                }
+            }
+        }
+    }
+
+
 
 }
