@@ -21,6 +21,20 @@ android:layout_height="match_parent">
         android:src="@drawable/round_camera_alt_24"
         app:backgroundTint="@color/secondaryColor" />
 
+    <TextView
+        android:id="@+id/prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="Take a photo of your meal and share it with the food hygiene certificate!"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/imagePreview"
+        app:layout_constraintStart_toStartOf="@+id/imagePreview"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/previewLayout"
         android:layout_width="match_parent"

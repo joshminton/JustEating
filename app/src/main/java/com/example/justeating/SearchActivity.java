@@ -6,13 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ProviderInfo;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -42,10 +42,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity  implements FilterDialogFragment.FilterDialogListener {
 
     private String query;
     private boolean listed;
@@ -76,15 +75,31 @@ public class SearchActivity extends AppCompatActivity {
     public static final String EXTRA_LONGITUDE = "lon";
     public static final String EXTRA_RANGE = "range";
     public static final String EXTRA_RATINGSQUERY = "ratings_query";
+//    public static final String EXTRA_BUSINESSTYPESLIST = "types_list";
+//    public static final String EXTRA_REGIONSLIST = "types_list";
+//    public static final String EXTRA_AUTHORITIESLIST = "types_list";
+
+    ArrayList<BusinessType> businessTypes = new ArrayList<>();
+    ArrayList<Authority> authorities = new ArrayList<>();
+    ArrayList<String> regions = new ArrayList<>();
 
     private Favourites db;
 
     ProgressBar searchProgressBar;
     ListView searchResultsList;
 
+    private FilterDialogFragment filterDialogFragment;
+    private Fragment.SavedState filterState;
+
+    public String typeFilter, ratingFilterOp, ratingFilterVal;
+    public Authority authFilter;
+
+    public boolean hasFilters;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("ONCREATE");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
@@ -95,6 +110,9 @@ public class SearchActivity extends AppCompatActivity {
         switchSortFab = findViewById(R.id.switchSortBtn);
         switchSortFab.hide();
         sortMode = false;
+
+        importFilters();
+        hasFilters = false;
 
         query = getIntent().getStringExtra(EXTRA_QUERY);
         locationSearch = getIntent().getBooleanExtra(EXTRA_IS_LOCATION_SEARCH, false);
@@ -162,8 +180,10 @@ public class SearchActivity extends AppCompatActivity {
 
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_DENIED) {
-                locManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locListener, Looper.myLooper());
-                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);
+//                locManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locListener, Looper.myLooper());
+                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 10, locListener);
+                while(latitude == 0.0 || longitude == 0.0){
+                }
             }
         }
 
@@ -230,6 +250,8 @@ public class SearchActivity extends AppCompatActivity {
             establishmentQuery = establishmentQuery.concat(getIntent().getStringExtra(EXTRA_RATINGSQUERY));
         }
 
+        establishmentQuery = establishmentQuery.concat("&pageSize=1000");
+
 
         System.out.println(establishmentQuery);
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, establishmentQuery, null,
@@ -262,6 +284,7 @@ public class SearchActivity extends AppCompatActivity {
 
     public void populateList(JSONArray items){
         establishments.clear();
+        System.out.println("HERE");
         if(items.length() == 0){
             ((TextView) findViewById(R.id.noResultsTxt)).setText(R.string.noResults);
         }else{
@@ -269,6 +292,7 @@ public class SearchActivity extends AppCompatActivity {
                 for(int i = 0; i<items.length(); i++){
                     JSONObject jo = items.getJSONObject(i);
                     Establishment est = new Establishment(jo.getString("BusinessName"), jo.getInt("FHRSID"));
+                    est.setAuthority(jo.getString("LocalAuthorityName"));
                     est.setType(jo.getString("BusinessType"));
                     est.setAddr1(jo.getString("AddressLine1"));
                     est.setAddr2(jo.getString("AddressLine2"));
@@ -283,6 +307,7 @@ public class SearchActivity extends AppCompatActivity {
                     est.setLongitude(jo.getJSONObject("geocode").getString("longitude"));
                     est.setLatitude(jo.getJSONObject("geocode").getString("latitude"));
                     est.setDateRated(jo.getString("RatingDate"));
+                    System.out.println(jo.getString("RatingDate"));
                     est.setSchemeType(jo.getString("SchemeType"));
                     if(favouriteIds.contains(jo.getInt("FHRSID"))){
                         est.setFavourite(true);
@@ -294,14 +319,15 @@ public class SearchActivity extends AppCompatActivity {
             }
             catch(JSONException err){}
         }
+        System.out.println(establishments.size());
         if(!sortMode){
             originalEstablishments = new ArrayList<>();
             originalEstablishments.addAll(establishments);
         }
         establishmentsAdpt.notifyDataSetChanged();
+        if(hasFilters) applyFilters();
         ((ProgressBar) findViewById(R.id.searchProgressBar)).setVisibility(View.INVISIBLE);
         searchResultsList.setVisibility(View.VISIBLE);
-
     }
 
 
@@ -318,34 +344,14 @@ public class SearchActivity extends AppCompatActivity {
         }
         menu.findItem(R.id.sort).getSubMenu().findItem(R.id.sortNone).setChecked(true);
 
-        for(int x = 0; x < menu.findItem(R.id.filter).getSubMenu().findItem(R.id.ratingFilter).getSubMenu().size(); x++){
-            menu.getItem(0).getSubMenu().getItem(0).getSubMenu().getItem(x).setChecked(true);
-        }
-
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.rated_0:
-               item.setChecked(!item.isChecked());
-                return true;
-            case R.id.rated_1:
-                item.setChecked(!item.isChecked());
-                return true;
-            case R.id.rated_2:
-                item.setChecked(!item.isChecked());
-                return true;
-            case R.id.rated_3:
-                item.setChecked(!item.isChecked());
-                return true;
-            case R.id.rated_4:
-                item.setChecked(!item.isChecked());
-                return true;
-            case R.id.rated_5:
-                item.setChecked(!item.isChecked());
-                return true;
+            case R.id.filter:
+                onFilterClick();
             case R.id.sortNone:
                 establishments = originalEstablishments;
                 establishmentsAdpt.notifyDataSetChanged();
@@ -392,7 +398,27 @@ public class SearchActivity extends AppCompatActivity {
 
     public void onSwitchSortPress(View view){
         Collections.reverse(establishments);
+        if(hasFilters) applyFilters();
         establishmentsAdpt.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFilterOKClick(FilterDialogFragment dialog) {
+        typeFilter = dialog.getSelectedEstab().getName();
+        authFilter = dialog.getSelectedAuthority();
+        ratingFilterOp = dialog.getRatingsOp();
+        if(!ratingFilterOp.equals("any")){
+            ratingFilterVal = dialog.getRatingsVal();
+        }
+
+        hasFilters = true;
+
+        applyFilters();
+
+//        estabFilter = dialog.getSelectedEstab();
+//        authorityFilter = dialog.getSelectedAuthority();
+//        ratingFilterQuery = dialog.getRatingsQuery();
+        filterState = getSupportFragmentManager().saveFragmentInstanceState(dialog);
     }
 
 //    public Comparator<Establishment> ratingComparison(){
@@ -445,6 +471,204 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    public void onFilterClick(){
+        if(filterDialogFragment == null){
+            filterDialogFragment = new FilterDialogFragment();
+            filterDialogFragment.setFilterLists(businessTypes, authorities, regions);
+        }
+        filterDialogFragment.setInitialSavedState(filterState);
+        filterDialogFragment.show(getSupportFragmentManager(), "filter");
+    }
+
+    protected void importFilters(){
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        final String typesQuery = "http://api.ratings.food.gov.uk/BusinessTypes";
+        JsonObjectRequest businessTypeRequest = new JsonObjectRequest(Request.Method.GET, typesQuery, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("Got response.");
+                        try {
+                            importEstablishmentTypes(response.getJSONArray("businessTypes"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("x-api-version", "2");
+                return headers;
+            }
+        };
+        requestQueue.add(businessTypeRequest);
+
+        final String authoritiesQuery = "http://api.ratings.food.gov.uk/Authorities";
+        JsonObjectRequest authorityRequest = new JsonObjectRequest(Request.Method.GET, authoritiesQuery, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("Got response.");
+                        try {
+                            importAuthorities(response.getJSONArray("authorities"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("x-api-version", "2");
+                return headers;
+            }
+        };
+        requestQueue.add(authorityRequest);
+
+        final String regionsQuery = "http://api.ratings.food.gov.uk/Regions";
+        JsonObjectRequest regionRequest = new JsonObjectRequest(Request.Method.GET, regionsQuery, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("Got response.");
+                        try {
+                            importRegions(response.getJSONArray("regions"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error.toString());
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("x-api-version", "2");
+                return headers;
+            }
+        };
+        requestQueue.add(regionRequest);
+    }
 
 
+    public void importEstablishmentTypes(JSONArray establishmentTypes){
+        try{
+            for(int i = 0; i<establishmentTypes.length(); i++){
+                JSONObject jo = establishmentTypes.getJSONObject(i);
+                businessTypes.add(new BusinessType(jo.getString("BusinessTypeName"), jo.getInt("BusinessTypeId")));
+            }
+        }
+        catch(JSONException err){}
+    }
+
+    public void importAuthorities(JSONArray authoritiesList){
+        try{
+            for(int i = 0; i<authoritiesList.length(); i++){
+                JSONObject jo = authoritiesList.getJSONObject(i);
+                authorities.add(new Authority(jo.getInt("LocalAuthorityId"), jo.getString("Name"), jo.getString("RegionName")));
+            }
+        }
+        catch(JSONException err){}
+    }
+
+    public void importRegions(JSONArray regionsList){
+        regions.add("None");
+        try{
+            for(int i = 0; i<regionsList.length(); i++){
+                JSONObject jo = regionsList.getJSONObject(i);
+                regions.add(jo.getString("name"));
+            }
+        }
+        catch(JSONException err){}
+    }
+
+    public void applyFilters(){
+        ArrayList<Establishment> filteredEstablishments = new ArrayList<>();
+        filteredEstablishments.addAll(establishments);
+
+        System.out.println(typeFilter + " " + authFilter + " " + ratingFilterOp);
+
+
+        if(typeFilter != null){
+            Iterator it = filteredEstablishments.iterator();
+            while(it.hasNext()){
+                Establishment est = (Establishment) it.next();
+                if(!est.getType().equals(typeFilter)){
+                    it.remove();
+                }
+            }
+        }
+
+        if(authFilter.getId() != -1){
+            Iterator it = filteredEstablishments.iterator();
+            while(it.hasNext()){
+                Establishment est = (Establishment) it.next();
+                if(!est.getAuthority().equals(authFilter.getName())){
+                    it.remove();
+                }
+            }
+        }
+
+        if(!ratingFilterOp.equals("any")){
+            if(ratingFilterOp.equals("exactly")){
+                Iterator it = filteredEstablishments.iterator();
+                while(it.hasNext()){
+                    Establishment est = (Establishment) it.next();
+                    if(est.getRating().equals("Exempt") || est.getRating().equals("AwaitingInspection")){
+                        it.remove();
+                        continue;
+                    }
+                    if(Integer.parseInt(est.getRating()) != Integer.parseInt(ratingFilterVal)){
+                        it.remove();
+                    }
+                }
+            } else if(ratingFilterOp.equals("maximum")){
+                Iterator it = filteredEstablishments.iterator();
+                while(it.hasNext()){
+                    Establishment est = (Establishment) it.next();
+                    if(est.getRating().equals("Exempt") || est.getRating().equals("AwaitingInspection")){
+                        it.remove();
+                        continue;
+                    }
+                    if(Integer.parseInt(est.getRating()) > Integer.parseInt(ratingFilterVal)){
+                        it.remove();
+                    }
+                }
+
+            } else if(ratingFilterOp.equals("minimum")){
+                Iterator it = filteredEstablishments.iterator();
+                while(it.hasNext()){
+                    Establishment est = (Establishment) it.next();
+                    if(est.getRating().equals("Exempt") || est.getRating().equals("AwaitingInspection")){
+                        it.remove();
+                        continue;
+                    }
+                    if(Integer.parseInt(est.getRating()) < Integer.parseInt(ratingFilterVal)){
+                        it.remove();
+                    }
+                }
+
+            }
+        }
+
+        establishmentsAdpt.changeSource(filteredEstablishments);
+        establishmentsAdpt.notifyDataSetChanged();
+    }
 }

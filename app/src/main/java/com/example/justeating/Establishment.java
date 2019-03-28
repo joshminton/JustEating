@@ -28,6 +28,7 @@ public class Establishment implements Serializable {
 
     @PrimaryKey
     @NonNull  private Integer id;
+    private String authority;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -75,6 +76,14 @@ public class Establishment implements Serializable {
     @NonNull
     public Integer getId() {
         return id;
+    }
+
+    public String getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 
     public String getAddr1() {
@@ -194,7 +203,7 @@ public class Establishment implements Serializable {
     }
 
     public void setDateRated(String dateRated) {
-        DateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'MM:HH:SS", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'mm:HH:ss", Locale.ENGLISH);
         try {
             setDateRated(format.parse(dateRated));
         } catch (ParseException e) {

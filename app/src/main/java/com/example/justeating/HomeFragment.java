@@ -61,6 +61,8 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
     LocationManager locationManager;
     LocationListener locationListener;
     private boolean waitingForPermission;
+    private FilterDialogFragment filterDialogFragment;
+    private Fragment.SavedState filterState;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -272,15 +274,19 @@ public class HomeFragment extends Fragment implements FilterDialogFragment.Filte
     }
 
     public void onFilterPress(View view){
-        FilterDialogFragment filterDialogFragment = new FilterDialogFragment();
-        filterDialogFragment.setFilterLists(businessTypes, authorities, regions);
+        if(filterDialogFragment == null){
+            filterDialogFragment = new FilterDialogFragment();
+            filterDialogFragment.setFilterLists(businessTypes, authorities, regions);
+        }
+        filterDialogFragment.setInitialSavedState(filterState);
         filterDialogFragment.show(getFragmentManager(), "filter");
     }
 
     public void onFilterOKClick(FilterDialogFragment dialog){
-        estabFilter = dialog.getSelectedEstab();
-        authorityFilter = dialog.getSelectedAuthority();
+        estabFilter = dialog.getSelectedEstab().getId();
+        authorityFilter = dialog.getSelectedAuthority().getId();
         ratingFilterQuery = dialog.getRatingsQuery();
+        filterState = getFragmentManager().saveFragmentInstanceState(dialog);
 
     }
 

@@ -165,6 +165,21 @@ public class FilterDialogFragment extends DialogFragment {
                 });
         // Create the AlertDialog object and return it
 
+
+        if(savedInstanceState != null){
+            businessTypeSpinner.setSelection(savedInstanceState.getInt("typePosition"));
+            regionSpinner.setSelection(savedInstanceState.getInt("regionPosition"));
+            if(savedInstanceState.getInt("regionPosition") != 0){
+                authoritySpinner.setSelection(savedInstanceState.getInt("authorityPosition"));
+                authoritySpinner.setEnabled(true);
+            }
+            ratingOpSpinner.setSelection(savedInstanceState.getInt("ratingOpPosition"));
+            if(savedInstanceState.getInt("ratingOpPosition") != 0){
+                ratingValSpinner.setSelection(savedInstanceState.getInt("ratingValPosition"));
+                ratingValSpinner.setEnabled(true);
+            }
+        }
+
         return builder.create();
     }
 
@@ -174,11 +189,11 @@ public class FilterDialogFragment extends DialogFragment {
         this.regions = regions;
     }
 
-    public Integer getSelectedEstab(){
-        if(((BusinessType) businessTypeSpinner.getSelectedItem()) != null){
-            return ((BusinessType) businessTypeSpinner.getSelectedItem()).getId();
+    public BusinessType getSelectedEstab(){
+        if((businessTypeSpinner.getSelectedItemPosition()) != 0){
+            return (BusinessType) businessTypeSpinner.getSelectedItem();
         } else {
-            return -1;
+            return new BusinessType(null, -1);
         }
     }
 
@@ -186,12 +201,14 @@ public class FilterDialogFragment extends DialogFragment {
         return -1;
     }
 
-    public Integer getSelectedAuthority(){
-        if(authoritySpinner.getSelectedItem() != null){
-            return ((Authority) authoritySpinner.getSelectedItem()).getId();
-        } else {
-            return -1;
-        }
+    public Authority getSelectedAuthority(){
+        if(regionSpinner.getSelectedItemPosition() != 0){
+            if(authoritySpinner.getSelectedItem() != null){
+                return (Authority) authoritySpinner.getSelectedItem();
+            } else {
+                return new Authority(-1, null, null);
+            }
+        } else return new Authority(-1, null, null);
     }
 
     public String getRatingsQuery(){
@@ -212,6 +229,25 @@ public class FilterDialogFragment extends DialogFragment {
                 break;
         }
         return query.concat("&ratingKey=").concat(val);
+    }
+
+    public String getRatingsOp(){
+            return (String) ratingOpSpinner.getSelectedItem();
+    }
+
+    public String getRatingsVal(){
+        return (String) ratingValSpinner.getSelectedItem();
+    }
+
+    public Bundle getState(){
+        Bundle state = new Bundle();
+        System.out.println("SAVE");
+        state.putInt("typePostion", businessTypeSpinner.getSelectedItemPosition());
+        state.putInt("regionPosition", regionSpinner.getSelectedItemPosition());
+        state.putInt("authorityPosition", authoritySpinner.getSelectedItemPosition());
+        state.putInt("ratingOpPosition", ratingOpSpinner.getSelectedItemPosition());
+        state.putInt("ratingValPosition", ratingValSpinner.getSelectedItemPosition());
+        return state;
     }
 
 }

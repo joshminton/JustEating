@@ -1,195 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".EstablishmentActivity">
-
-    <TextView
-        android:id="@+id/dateRatedText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/sample"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ratingDescriptorText" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primaryDarkColor"
-        android:elevation="4dp"
-        android:gravity="left"
-        android:orientation="vertical"
-        android:paddingLeft="24dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp">
-
-        <TextView
-            android:id="@+id/establishmentTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:elevation="1dp"
-            android:text="@string/sample"
-            android:textAppearance="@android:style/TextAppearance.Material.Title"
-            android:textColor="@color/white"
-            android:textSize="36sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/establishmentType"
-            android:layout_width="336dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:elevation="1dp"
-            android:text="@string/sample"
-            android:textAppearance="@android:style/TextAppearance.Material.Display1"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/ratingBox"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/rounded_corner_top"
-        android:clickable="false"
-        android:elevation="1dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <View
-        android:id="@+id/ratingSubBox"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/rounded_corner_bottom"
-        android:elevation="1dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ratingBox" />
-
-    <TextView
-        android:id="@+id/rating"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:elevation="1dp"
-        android:fontFamily="sans-serif-black"
-        android:text="TextView"
-        android:textAlignment="textStart"
-        android:textAppearance="@android:style/TextAppearance.Material.Display3"
-        app:layout_constraintBottom_toBottomOf="@+id/ratingBox"
-        app:layout_constraintEnd_toEndOf="@+id/ratingBox"
-        app:layout_constraintStart_toStartOf="@+id/ratingBox"
-        app:layout_constraintTop_toTopOf="@+id/ratingBox"
-        tools:text="5" />
-
-    <TextView
-        android:id="@+id/ratingDescriptorText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:color="@color/white"
-        android:elevation="1dp"
-        android:text="TextView"
-        android:textAllCaps="true"
-        android:textAppearance="@android:style/TextAppearance.Material.Title"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/ratingSubBox"
-        app:layout_constraintEnd_toEndOf="@+id/ratingSubBox"
-        app:layout_constraintStart_toStartOf="@+id/ratingSubBox"
-        app:layout_constraintTop_toTopOf="@+id/ratingSubBox" />
-
-    <TextView
-        android:id="@+id/addressLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:text="Address"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateRatedText" />
-
-    <TextView
-        android:id="@+id/addressFullLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addressLabel" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="214dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="1dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/ratingSubBox"
-        app:layout_constraintEnd_toEndOf="@+id/ratingBox"
-        app:layout_constraintTop_toTopOf="@+id/ratingBox">
-
-        <TextView
-            android:id="@+id/riskHeading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Risks:"
-            android:textAlignment="center"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/hygieneLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center" />
-
-        <TextView
-            android:id="@+id/structuralLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center" />
-
-        <TextView
-            android:id="@+id/confMangmntLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center" />
-    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/favouriteFab"
@@ -204,4 +20,206 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/round_favorite_border_36" />
 
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".EstablishmentActivity"> <!-- usually the name of the Java file associated with this activity -->
+
+
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".EstablishmentActivity">
+
+            <TextView
+                android:id="@+id/dateRatedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/sample"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ratingDescriptorText" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primaryDarkColor"
+                android:elevation="4dp"
+                android:gravity="left"
+                android:orientation="vertical"
+                android:paddingLeft="24dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="0dp">
+
+                <TextView
+                    android:id="@+id/establishmentTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:elevation="1dp"
+                    android:text="@string/sample"
+                    android:textAppearance="@android:style/TextAppearance.Material.Title"
+                    android:textColor="@color/white"
+                    android:textSize="36sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/establishmentType"
+                    android:layout_width="336dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:elevation="1dp"
+                    android:text="@string/sample"
+                    android:textAppearance="@android:style/TextAppearance.Material.Display1"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/ratingBox"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/rounded_corner_top"
+                android:clickable="false"
+                android:elevation="1dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+            <View
+                android:id="@+id/ratingSubBox"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/rounded_corner_bottom"
+                android:elevation="1dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ratingBox" />
+
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:elevation="1dp"
+                android:fontFamily="sans-serif-black"
+                android:text="TextView"
+                android:textAlignment="textStart"
+                android:textAppearance="@android:style/TextAppearance.Material.Display3"
+                app:layout_constraintBottom_toBottomOf="@+id/ratingBox"
+                app:layout_constraintEnd_toEndOf="@+id/ratingBox"
+                app:layout_constraintStart_toStartOf="@+id/ratingBox"
+                app:layout_constraintTop_toTopOf="@+id/ratingBox"
+                tools:text="5" />
+
+            <TextView
+                android:id="@+id/ratingDescriptorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:color="@color/white"
+                android:elevation="1dp"
+                android:text="TextView"
+                android:textAllCaps="true"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/ratingSubBox"
+                app:layout_constraintEnd_toEndOf="@+id/ratingSubBox"
+                app:layout_constraintStart_toStartOf="@+id/ratingSubBox"
+                app:layout_constraintTop_toTopOf="@+id/ratingSubBox" />
+
+            <TextView
+                android:id="@+id/addressLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="32dp"
+                android:text="Address"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dateRatedText" />
+
+            <TextView
+                android:id="@+id/addressFullLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:text="TextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addressLabel" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="214dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="8dp"
+                android:elevation="1dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/ratingSubBox"
+                app:layout_constraintEnd_toEndOf="@+id/ratingBox"
+                app:layout_constraintTop_toTopOf="@+id/ratingBox">
+
+                <TextView
+                    android:id="@+id/riskHeading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Risks:"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/hygieneLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/structuralLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/confMangmntLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

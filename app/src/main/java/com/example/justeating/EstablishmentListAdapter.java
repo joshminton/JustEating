@@ -128,4 +128,8 @@ public class EstablishmentListAdapter extends BaseAdapter implements ListAdapter
 
         return view;
     }
+
+    public void changeSource(ArrayList<Establishment> newSource){
+        this.establishments = newSource;
+    }
 }
