@@ -1,7 +1,7 @@
 # JustEating
 ## An Android app for finding Food Standards Agency food ratings for establishments in the UK.
 
-![Main Image of app active](Screenshots/screens.png)
+![Main Image of app active](screens.png)
 
 This app was developed for the Mobile and Ubiquitous Computing module at University of Birmingham, March 2019. Using the FSA's [food hygiene rating API](https://api.ratings.food.gov.uk/help), it allows users to
 * Search for establishments across the UK by name
