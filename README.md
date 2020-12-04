@@ -1,5 +1,5 @@
 # JustEating
-## An Android app for finding Food Standards Agency food ratings for establishments in the UK.
+## An Android app for finding Food Standards Agency hygiene ratings for establishments in the UK.
 
 ![Main Image of app active](screens.png)
 
